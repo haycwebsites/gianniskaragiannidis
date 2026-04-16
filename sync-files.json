@@ -1,0 +1,17 @@
+{
+  "files": [
+    ".github/workflows/deploy.yml",
+    ".cursor/rules/hayc-config.mdc",
+    "scripts/pull-config.ts",
+    "scripts/sync-baseline.ts",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "tsconfig.node.json",
+    "tsconfig.scripts.json",
+    "postcss.config.js",
+    "eslint.config.js",
+    "src/hayc/config-context.tsx",
+    "src/components/LanguageSwitcher.tsx",
+    "src/components/ContactForm.tsx"
+  ]
+}
