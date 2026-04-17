@@ -1,7 +1,15 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { siteConfig, digitalProductsConfig } from '../src/config.js';
+import {
+  siteConfig,
+  digitalProductsConfig,
+  navigationConfig,
+  footerConfig,
+  homePageConfig,
+  aboutPageConfig,
+  contactPageConfig,
+} from '../src/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +19,11 @@ const config = {
   exportedAt: new Date().toISOString(),
   siteConfig,
   digitalProductsConfig,
+  navigationConfig,
+  footerConfig,
+  homePageConfig,
+  aboutPageConfig,
+  contactPageConfig,
 };
 
 const projectRoot = path.resolve(__dirname, '../../');

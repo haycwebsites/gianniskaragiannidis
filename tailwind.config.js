@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
+  // Bootstrap 5 provides reboot, .container, and layout utilities — avoid fighting it.
+  corePlugins: {
+    preflight: false,
+    container: false,
+  },
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {

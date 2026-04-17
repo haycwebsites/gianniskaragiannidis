@@ -1,10 +1,29 @@
-import { siteConfig, digitalProductsConfig, type DigitalProductsConfig } from '../config';
+import {
+  siteConfig,
+  digitalProductsConfig,
+  navigationConfig,
+  footerConfig,
+  homePageConfig,
+  aboutPageConfig,
+  contactPageConfig,
+  type DigitalProductsConfig,
+  type NavigationConfig,
+  type FooterConfig,
+  type HomePageConfig,
+  type AboutPageConfig,
+  type ContactPageConfig,
+} from '../config';
 
 export interface RemoteConfig {
   version: number;
   exportedAt: string;
   siteConfig: typeof siteConfig;
   digitalProductsConfig?: DigitalProductsConfig;
+  navigationConfig: NavigationConfig;
+  footerConfig: FooterConfig;
+  homePageConfig: HomePageConfig;
+  aboutPageConfig: AboutPageConfig;
+  contactPageConfig: ContactPageConfig;
 }
 
 export const defaultConfig: RemoteConfig = {
@@ -12,6 +31,11 @@ export const defaultConfig: RemoteConfig = {
   exportedAt: '',
   siteConfig,
   digitalProductsConfig,
+  navigationConfig,
+  footerConfig,
+  homePageConfig,
+  aboutPageConfig,
+  contactPageConfig,
 };
 
 export async function fetchRemoteConfig(): Promise<RemoteConfig> {
@@ -24,8 +48,19 @@ export async function fetchRemoteConfig(): Promise<RemoteConfig> {
   try {
     const res = await fetch('/hayc/config.json');
     if (!res.ok) throw new Error('Failed to fetch config: ' + res.status);
-    const data = await res.json();
-    return data as RemoteConfig;
+    const data = (await res.json()) as Partial<RemoteConfig>;
+    return {
+      ...defaultConfig,
+      ...data,
+      navigationConfig: data.navigationConfig ?? defaultConfig.navigationConfig,
+      footerConfig: data.footerConfig ?? defaultConfig.footerConfig,
+      homePageConfig: data.homePageConfig ?? defaultConfig.homePageConfig,
+      aboutPageConfig: data.aboutPageConfig ?? defaultConfig.aboutPageConfig,
+      contactPageConfig: {
+        ...defaultConfig.contactPageConfig,
+        ...(data.contactPageConfig ?? {}),
+      },
+    };
   } catch (err) {
     console.warn('[HAYC] Remote config fetch failed, using default config.', err);
     return defaultConfig;

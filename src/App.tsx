@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate }
 import { HaycProvider } from './hayc/config-context';
 import ScrollToTop from './components/ScrollToTop';
 import IndexPage from './pages/IndexPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 // HAYC Pipeline: Additional page imports are added
 // here automatically during project creation.
 
@@ -13,6 +15,8 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<IndexPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           {/* HAYC Pipeline: Additional routes are
               added here during project creation. */}
           <Route path="*" element={<Navigate to="/" replace />} />
