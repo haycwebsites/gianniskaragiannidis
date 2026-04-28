@@ -1,11 +1,39 @@
 import { useState, useCallback } from 'react';
 import { useHayc } from '../hayc/config-context';
 
+const labels = {
+  nameLabel: { el: 'Όνομα', en: 'Name' },
+  emailLabel: { el: 'Email', en: 'Email' },
+  messageLabel: { el: 'Μήνυμα', en: 'Message' },
+  submitButton: { el: 'Αποστολή', en: 'Send Message' },
+  submitting: { el: 'Αποστολή...', en: 'Sending...' },
+  successTitle: { el: 'Το μήνυμά σας στάλθηκε!', en: 'Message sent!' },
+  successText: {
+    el: 'Θα επικοινωνήσουμε μαζί σας σύντομα.',
+    en: 'We will get back to you shortly.',
+  },
+  errorText: {
+    el: 'Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.',
+    en: 'Something went wrong. Please try again.',
+  },
+  nameRequired: {
+    el: 'Το όνομα είναι υποχρεωτικό.',
+    en: 'Name is required.',
+  },
+  emailInvalid: {
+    el: 'Εισάγετε έγκυρο email.',
+    en: 'Please enter a valid email.',
+  },
+  messageRequired: {
+    el: 'Το μήνυμα είναι υποχρεωτικό.',
+    en: 'Message is required.',
+  },
+};
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ContactForm() {
-  const { t, config, cp } = useHayc();
-  const cf = config.contactPageConfig;
+  const { t, config } = useHayc();
   const siteId = config.siteConfig.siteId;
   const apiUrl = config.siteConfig.apiUrl;
 
@@ -24,12 +52,12 @@ export function ContactForm() {
 
   const validate = useCallback((): boolean => {
     const errors: { name?: string; email?: string; message?: string } = {};
-    if (!name.trim()) errors.name = t(cf.contactFormNameRequired);
-    if (!EMAIL_PATTERN.test(email.trim())) errors.email = t(cf.contactFormEmailInvalid);
-    if (!message.trim()) errors.message = t(cf.contactFormMessageRequired);
+    if (!name.trim()) errors.name = t(labels.nameRequired);
+    if (!EMAIL_PATTERN.test(email.trim())) errors.email = t(labels.emailInvalid);
+    if (!message.trim()) errors.message = t(labels.messageRequired);
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
-  }, [name, email, message, t, cf]);
+  }, [name, email, message, t]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -38,7 +66,7 @@ export function ContactForm() {
       if (!validate()) return;
 
       if (!apiUrl || !siteId) {
-        setError(t(cf.contactFormError));
+        setError(t(labels.errorText));
         return;
       }
 
@@ -58,12 +86,12 @@ export function ContactForm() {
         if (!res.ok) throw new Error('Request failed');
         setSubmitted(true);
       } catch {
-        setError(t(cf.contactFormError));
+        setError(t(labels.errorText));
       } finally {
         setLoading(false);
       }
     },
-    [apiUrl, siteId, name, email, message, hp, validate, t, cf]
+    [apiUrl, siteId, name, email, message, hp, validate, t]
   );
 
   if (submitted) {
@@ -83,8 +111,8 @@ export function ContactForm() {
           }
         `}</style>
         <div className="contact-form-success">
-          <h3 {...cp('contactPageConfig.contactFormSuccessTitle')}>{t(cf.contactFormSuccessTitle)}</h3>
-          <p {...cp('contactPageConfig.contactFormSuccessText')}>{t(cf.contactFormSuccessText)}</p>
+          <h3>{t(labels.successTitle)}</h3>
+          <p>{t(labels.successText)}</p>
         </div>
       </>
     );
@@ -171,8 +199,8 @@ export function ContactForm() {
         />
 
         <div className="contact-form-field">
-          <label className="contact-form-label" htmlFor="contact-name" {...cp('contactPageConfig.contactFormNameLabel')}>
-            {t(cf.contactFormNameLabel)}
+          <label className="contact-form-label" htmlFor="contact-name">
+            {t(labels.nameLabel)}
           </label>
           <input
             id="contact-name"
@@ -188,15 +216,15 @@ export function ContactForm() {
             aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
           />
           {fieldErrors.name && (
-            <p id="contact-name-error" className="contact-form-error" {...cp('contactPageConfig.contactFormNameRequired')}>
+            <p id="contact-name-error" className="contact-form-error">
               {fieldErrors.name}
             </p>
           )}
         </div>
 
         <div className="contact-form-field">
-          <label className="contact-form-label" htmlFor="contact-email" {...cp('contactPageConfig.contactFormEmailLabel')}>
-            {t(cf.contactFormEmailLabel)}
+          <label className="contact-form-label" htmlFor="contact-email">
+            {t(labels.emailLabel)}
           </label>
           <input
             id="contact-email"
@@ -212,15 +240,15 @@ export function ContactForm() {
             aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
           />
           {fieldErrors.email && (
-            <p id="contact-email-error" className="contact-form-error" {...cp('contactPageConfig.contactFormEmailInvalid')}>
+            <p id="contact-email-error" className="contact-form-error">
               {fieldErrors.email}
             </p>
           )}
         </div>
 
         <div className="contact-form-field">
-          <label className="contact-form-label" htmlFor="contact-message" {...cp('contactPageConfig.contactFormMessageLabel')}>
-            {t(cf.contactFormMessageLabel)}
+          <label className="contact-form-label" htmlFor="contact-message">
+            {t(labels.messageLabel)}
           </label>
           <textarea
             id="contact-message"
@@ -236,23 +264,18 @@ export function ContactForm() {
             aria-describedby={fieldErrors.message ? 'contact-message-error' : undefined}
           />
           {fieldErrors.message && (
-            <p id="contact-message-error" className="contact-form-error" {...cp('contactPageConfig.contactFormMessageRequired')}>
+            <p id="contact-message-error" className="contact-form-error">
               {fieldErrors.message}
             </p>
           )}
         </div>
 
-        <button
-          type="submit"
-          className="contact-form-button"
-          disabled={loading}
-          {...cp('contactPageConfig.contactFormSubmit')}
-        >
-          {loading ? t(cf.contactFormSubmitting) : t(cf.contactFormSubmit)}
+        <button type="submit" className="contact-form-button" disabled={loading}>
+          {loading ? t(labels.submitting) : t(labels.submitButton)}
         </button>
 
         {error && (
-          <p className="contact-form-error" role="alert" {...cp('contactPageConfig.contactFormError')}>
+          <p className="contact-form-error" role="alert">
             {error}
           </p>
         )}
