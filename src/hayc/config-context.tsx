@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components -- useHayc is the public API alongside HaycProvider */
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { LocaleString } from '../config';
 import { type RemoteConfig, defaultConfig, fetchRemoteConfig } from './use-remote-config';
@@ -25,7 +24,7 @@ export function HaycProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    queueMicrotask(() => setIsEditMode(params.get('hayc-edit') === 'true'));
+    setIsEditMode(params.get('hayc-edit') === 'true');
   }, []);
 
   useEffect(() => {
